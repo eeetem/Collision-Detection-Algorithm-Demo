@@ -8,12 +8,16 @@ public class Entity{
     Vector2 Size;
     Vector2 Position;
     Vector2 Velocity;
+
+    int ID;
     Color color;
 
 
     public Entity(Vector2 Position, Vector2 Size){
         this.Position = Position;//position is top left corner of the rectangle not centre
         this.Size = Size;
+
+        ID = EntityManager.GetNextId();
 
         Random rand = new Random();
 
@@ -32,6 +36,7 @@ public class Entity{
 
         g.setColor(color);
         g.fillRect((int) Position.x , (int) Position.y, (int) Size.x, (int) Size.y);
+        g.drawString("ID:"+ID,(int) Position.x , (int) Position.y);
 
     }
 

@@ -43,18 +43,13 @@ public class Main {
 
 
 
-        EntityManager.MakeRandomEntity();
-        EntityManager.MakeRandomEntity();
-        EntityManager.MakeRandomEntity();
-        EntityManager.MakeRandomEntity();
-        EntityManager.MakeRandomEntity();
-        EntityManager.MakeRandomEntity();
-        EntityManager.MakeRandomEntity();
-        EntityManager.MakeRandomEntity();
-        EntityManager.MakeRandomEntity();
-        EntityManager.MakeRandomEntity();
-        EntityManager.MakeRandomEntity();
-        EntityManager.MakeRandomEntity();
+
+
+
+        for (int i = 0; i < 100; i++) {
+            EntityManager.MakeRandomEntity();
+
+        }
 
 
 
@@ -86,7 +81,7 @@ public class Main {
 
             if (timeElapsed >= MSperTick)
             {
-                System.out.printf("Lag Warning: Current tick took "+ timeElapsed+"ms to process which is bigger than the target "+MSperTick+"ms");
+                System.out.printf("Lag Warning: Current tick took "+ timeElapsed+"ms to process which is bigger than the target "+MSperTick+"ms\n");
             }
             else
             {

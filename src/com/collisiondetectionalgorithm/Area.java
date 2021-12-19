@@ -1,9 +1,9 @@
 package com.collisiondetectionalgorithm;
 
-import javax.print.attribute.standard.Media;
+
 import java.awt.*;
 import java.util.ArrayList;
-
+import java.lang.String;
 
 public class Area {
     Vector2 Position;
@@ -20,7 +20,15 @@ public class Area {
 
         g.setColor(Color.white);
         g.drawRect((int) Position.x , (int) Position.y, (int)  Size.x, (int) Size.y);
-        g.drawString("Entities Contained: "+ContainedEntities.size(),(int) Position.x , (int) Position.y+10);
+
+        String Contents = "";
+        for (Entity e: ContainedEntities) {
+            Contents += e.ID+", ";
+
+        }
+
+
+        g.drawString("Entities Contained: "+Contents,(int) Position.x , (int) Position.y+10);
 
 
 
@@ -84,19 +92,25 @@ public class Area {
         Area area1;
         Area area2;
 
+        float DistanceFromStartToMedian;
         float DistanceFromMedianToEdge;
-        if(AxisFlag) DistanceFromMedianToEdge = Size.x - MedianCoordinate;
-        else DistanceFromMedianToEdge = Size.y - MedianCoordinate;
+        if(AxisFlag) DistanceFromMedianToEdge = (Position.x + Size.x) - MedianCoordinate;
+        else DistanceFromMedianToEdge = (Position.y + Size.y) - MedianCoordinate;
+
+        if(AxisFlag) DistanceFromStartToMedian = MedianCoordinate - Position.x;
+        else DistanceFromStartToMedian = MedianCoordinate - Position.y;
+
+
 
 
 
         if(AxisFlag){
-            area1 = new Area(Position,new Vector2(MedianCoordinate, Size.y),Entities1);
-            area2 = new Area(new Vector2(Position.x+MedianCoordinate,Position.y),new Vector2(DistanceFromMedianToEdge, Size.y),Entities2);
+            area1 = new Area(Position,new Vector2(DistanceFromStartToMedian, Size.y),Entities1);
+            area2 = new Area(new Vector2(Position.x+DistanceFromStartToMedian,Position.y),new Vector2(DistanceFromMedianToEdge, Size.y),Entities2);
 
         }else{
-            area1 = new Area(Position,new Vector2(Size.x, MedianCoordinate),Entities1);
-            area2 = new Area(new Vector2(Position.x,Position.y+MedianCoordinate),new Vector2(Size.x, DistanceFromMedianToEdge),Entities2);
+            area1 = new Area(Position,new Vector2(Size.x, DistanceFromStartToMedian),Entities1);
+            area2 = new Area(new Vector2(Position.x,Position.y+DistanceFromStartToMedian),new Vector2(Size.x, DistanceFromMedianToEdge),Entities2);
         }
         returnAreas.addAll(area1.Subdivide(!AxisFlag));
         returnAreas.addAll(area2.Subdivide(!AxisFlag));

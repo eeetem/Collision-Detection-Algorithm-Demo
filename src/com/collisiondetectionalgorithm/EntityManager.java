@@ -32,6 +32,14 @@ public class EntityManager {
     }
 
 
+    static int lastID=0;
+
+    public static int GetNextId() {
+        lastID++;
+        return lastID;
+
+
+    }
 
     public static void Update(float deltaseconds)
     {
