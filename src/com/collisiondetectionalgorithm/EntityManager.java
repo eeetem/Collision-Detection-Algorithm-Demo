@@ -1,15 +1,20 @@
 package com.collisiondetectionalgorithm;
 
 
-import javax.swing.text.Position;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class EntityManager {
 
-    static public ArrayList<Entity> entities = new ArrayList<Entity>();
-    static public ArrayList<Area> areas = new ArrayList<Area>();
+
+
+
+    static public ArrayList<Entity> Entities = new ArrayList<Entity>();
+    static public ArrayList<Area> Areas = new ArrayList<Area>();
+
+
+    static private boolean modifying = true;
 
 
 
@@ -17,8 +22,8 @@ public class EntityManager {
 
         Random rand = new Random();
 
-        Entity e = MakeEntity(new Vector2(rand.nextInt(Main.canvas.getWidth()-600),rand.nextInt(Main.canvas.getHeight()-200)),new Vector2(rand.nextInt(15)+10,rand.nextInt(15)+10));
-        e.Velocity = new Vector2(rand.nextInt(100)-50,rand.nextInt(100)-50f);
+        Entity e = MakeEntity(new Vector2(rand.nextInt(Main.canvas.getWidth()-300),rand.nextInt(Main.canvas.getHeight()-200)),new Vector2(rand.nextInt(15)+5,rand.nextInt(15)+5));
+        e.Velocity = new Vector2(rand.nextInt(80)-40,rand.nextInt(80)-40);
 
         return e;
     }
@@ -27,7 +32,7 @@ public class EntityManager {
     public static Entity MakeEntity(Vector2 Position, Vector2 Size)
     {
         Entity e = new Entity(Position,Size);
-         entities.add(e);
+         Entities.add(e);
          return e;
     }
 
@@ -44,25 +49,31 @@ public class EntityManager {
     public static void Update(float deltaseconds)
     {
 
-        for (Entity entity : entities)
+        ///draw uses Last lists in oder to not cause simoultaneous modification exceptions
+
+        modifying = true;
+
+
+        for (Entity entity : Entities)
         {
             entity.Update(deltaseconds);
-            HandleBorderCollision(entity);
+
         }
 
 
-        Area root = new Area(new Vector2(0,0), new Vector2(Main.canvas.getWidth(),Main.canvas.getHeight()), entities);
+        Area root = new Area(new Vector2(0,0), new Vector2(Main.canvas.getWidth(),Main.canvas.getHeight()), Entities);
 
-        areas = root.Subdivide(true);
+        Areas = root.Subdivide(true);
 
 
 
-        for (Area a: areas){
+        for (Area a: Areas){
 
             ArrayList<Entity> excludelist = new ArrayList<Entity>();
 
             for (Entity entity : a.ContainedEntities)
             { excludelist.add(entity);
+
 
                 for (Entity entity2 : a.ContainedEntities)
                 {
@@ -74,10 +85,11 @@ public class EntityManager {
 
 
                 }
-
+                HandleBorderCollision(entity);//this bit could probably be done better since right now every entity is checked for border collision
             }
 
         }
+        modifying = false;
 
 
     }
@@ -87,12 +99,25 @@ public class EntityManager {
     public static void Draw(Graphics g)
     {
 
-        for (Area a : areas)
+        while(modifying){//wait for ticker to finish current tick
+            try {
+                Thread.sleep(1);
+
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+
+        }
+        ArrayList<Entity> CachedEntities = new ArrayList<Entity>(Entities);
+        ArrayList<Area> CachedAreas = new ArrayList<Area>(Areas);
+
+
+        for (Area a : CachedAreas)
         {
             a.Draw(g);
 
         }
-        for (Entity entity : entities)
+        for (Entity entity : CachedEntities)
         {
             entity.Draw(g);
 
@@ -123,18 +148,19 @@ public class EntityManager {
 
 
 
+
       if (e1.Position.y<e2.Position.y) {
-          Yoverlap = e1.Position.y + e1.Size.y - e2.Position.y;
+          Yoverlap = e1.Position.y + e1.Size.y - e2.Position.y +0.1f;//the +0.1 is added so when the objects get puhsed back by overlap they dont end up immideately in each other again
       }
       else{
-          Yoverlap = e2.Position.y + e2.Size.y - e1.Position.y;
+          Yoverlap = e2.Position.y + e2.Size.y - e1.Position.y +0.1f;
       }
 
         if (e1.Position.x<e2.Position.x) {
-            Xoverlap = e1.Position.x + e1.Size.x - e2.Position.x;
+            Xoverlap = e1.Position.x + e1.Size.x - e2.Position.x +0.1f;
         }
         else{
-            Xoverlap = e2.Position.x + e2.Size.x - e1.Position.x;
+            Xoverlap = e2.Position.x + e2.Size.x - e1.Position.x +0.1f;
         }
 
 
@@ -144,15 +170,17 @@ public class EntityManager {
         //perform the collision in the axis of least overlap since that's the overlap that most recently happen
 
         if(Xoverlap > Yoverlap){
-            e1.Velocity.y = -e1.Velocity.y;
-            e2.Velocity.y = -e2.Velocity.y;
+            float e1vel = e1.Velocity.y;
+            e1.Velocity.y = e2.Velocity.y;
+            e2.Velocity.y = e1vel;
             e1.Position.y -= Yoverlap/2;
             e2.Position.y += Yoverlap/2;
 
 
         }else{
-            e1.Velocity.x = -e1.Velocity.x;
-            e2.Velocity.x = -e2.Velocity.x;
+            float e1vel =  e1.Velocity.x;
+            e1.Velocity.x = e2.Velocity.x;
+            e2.Velocity.x = e1vel;
             e1.Position.x -= Xoverlap/2;
             e2.Position.x += Xoverlap/2;
         }
@@ -161,21 +189,39 @@ public class EntityManager {
 
 
     public static void HandleBorderCollision(Entity e){
-        if(e.Position.x < 0 || e.Position.x+e.Size.x > Main.canvas.getWidth()){
+        if(e.Position.x <= 0){
             e.Velocity.x = -e.Velocity.x;
+            float overlap = 0 - e.Position.x;
+            e.Position.x += overlap;
+
 
 
         }
+        else if(e.Position.x+e.Size.x >= Main.canvas.getWidth()){
 
-        if(e.Position.y < 0 || e.Position.y+e.Size.y > Main.canvas.getHeight()){
+            e.Velocity.x = -e.Velocity.x;
+            float overlap = e.Position.x+e.Size.x - Main.canvas.getWidth();
+            e.Position.x -= overlap;
+        }
+
+
+
+        if(e.Position.y <= 0){
             e.Velocity.y = -e.Velocity.y;
+            float overlap = 0 - e.Position.y;
+            e.Position.y += overlap;
+
 
 
         }
+        else if(e.Position.y+e.Size.y >= Main.canvas.getHeight()) {
+
+            e.Velocity.y = -e.Velocity.y;
+            float overlap = e.Position.y+e.Size.y - Main.canvas.getHeight();
+            e.Position.y -= overlap;
 
 
-
-
+        }
 
     }
 

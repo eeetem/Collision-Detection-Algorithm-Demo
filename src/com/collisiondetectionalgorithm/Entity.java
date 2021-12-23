@@ -42,16 +42,18 @@ public class Entity{
 
 
 
+
+
 }
 class Xcomparator implements Comparator<Entity>{
     @Override
     public int compare(Entity o1, Entity o2) {
-        return (int) (o1.Position.x - o2.Position.x);
+        return  ((int)(o1.Position.x+o1.Size.x) - (int)(o2.Position.x+o2.Size.x));
     }
 }
 class Ycomparator implements Comparator<Entity>{
     @Override
     public int compare(Entity o1, Entity o2) {
-        return (int) (o1.Position.y - o2.Position.y);
+        return ((int)(o1.Position.y+o1.Size.y) - (int)(o2.Position.y+o2.Size.y));
     }
 }
