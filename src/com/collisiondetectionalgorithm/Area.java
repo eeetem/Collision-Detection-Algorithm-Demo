@@ -3,9 +3,6 @@ package com.collisiondetectionalgorithm;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.lang.String;
-import java.util.Collection;
-import java.util.Collections;
 
 public class Area {
     Vector2 Position;

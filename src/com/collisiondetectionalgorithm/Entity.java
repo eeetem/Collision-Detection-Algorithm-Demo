@@ -1,6 +1,7 @@
 package com.collisiondetectionalgorithm;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
 
@@ -11,6 +12,9 @@ public class Entity{
 
     int ID;
     Color color;
+
+
+
 
 
     public Entity(Vector2 Position, Vector2 Size){
@@ -27,6 +31,8 @@ public class Entity{
 
     }
     public void Update(float deltaseconds){
+
+
         Position.x += Velocity.x*deltaseconds;
         Position.y += Velocity.y*deltaseconds;
 

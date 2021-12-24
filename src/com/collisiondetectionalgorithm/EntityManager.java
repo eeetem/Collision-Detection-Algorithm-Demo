@@ -17,10 +17,12 @@ public class EntityManager {
     static private boolean modifying = true;
 
 
+    public static Random rand = new Random(0);
+
 
     public static Entity MakeRandomEntity(){
 
-        Random rand = new Random();
+
 
         Entity e = MakeEntity(new Vector2(rand.nextInt(Main.canvas.getWidth()-300),rand.nextInt(Main.canvas.getHeight()-200)),new Vector2(rand.nextInt(15)+5,rand.nextInt(15)+5));
         e.Velocity = new Vector2(rand.nextInt(80)-40,rand.nextInt(80)-40);
@@ -131,6 +133,8 @@ public class EntityManager {
     public static void HandleCollision(Entity e1, Entity e2){
 
 
+
+
         //if left size X of e1 is bigger than e2 right side X or vice versa - they can't be touching
       if(e1.Position.x > e2.Position.x +  e2.Size.x || e2.Position.x > e1.Position.x + e1.Size.x){
          return;
@@ -150,17 +154,17 @@ public class EntityManager {
 
 
       if (e1.Position.y<e2.Position.y) {
-          Yoverlap = e1.Position.y + e1.Size.y - e2.Position.y +0.1f;//the +0.1 is added so when the objects get puhsed back by overlap they dont end up immideately in each other again
+          Yoverlap = e1.Position.y + e1.Size.y - e2.Position.y;
       }
       else{
-          Yoverlap = e2.Position.y + e2.Size.y - e1.Position.y +0.1f;
+          Yoverlap = -(e2.Position.y + e2.Size.y - e1.Position.y);
       }
 
         if (e1.Position.x<e2.Position.x) {
-            Xoverlap = e1.Position.x + e1.Size.x - e2.Position.x +0.1f;
+            Xoverlap = e1.Position.x + e1.Size.x - e2.Position.x;
         }
         else{
-            Xoverlap = e2.Position.x + e2.Size.x - e1.Position.x +0.1f;
+            Xoverlap = -(e2.Position.x + e2.Size.x - e1.Position.x);
         }
 
 
@@ -169,7 +173,7 @@ public class EntityManager {
 
         //perform the collision in the axis of least overlap since that's the overlap that most recently happen
 
-        if(Xoverlap > Yoverlap){
+        if(Math.abs(Xoverlap) > Math.abs(Yoverlap)){
             float e1vel = e1.Velocity.y;
             e1.Velocity.y = e2.Velocity.y;
             e2.Velocity.y = e1vel;

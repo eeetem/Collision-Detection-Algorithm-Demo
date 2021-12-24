@@ -28,10 +28,15 @@ public class Main {
         frame.setResizable(false);
 
 
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 300; i++) {
             EntityManager.MakeRandomEntity();
 
-        }
+       }
+
+
+
+       // EntityManager.MakeEntity(new Vector2(10,10),new Vector2(5,10)).Velocity = new Vector2(25,20);
+        //EntityManager.MakeEntity(new Vector2(100,100),new Vector2(10,5)).Velocity = new Vector2(-10,-13);
 
         Renderer renderer = new Renderer(canvas);
         Ticker ticker = new Ticker();
