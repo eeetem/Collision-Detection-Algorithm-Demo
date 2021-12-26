@@ -6,7 +6,9 @@
 Physics tickrate, framerate and toggling of the partitioning algorithms(as oposed to bruteforce collision check) is available in order to observer the effects of KD partitioning on performace.
 
 My machine can handle about:
+
 300-400 Enitites without KD partitioning
+
 and 2000+ with KD partitioning
  
 ![image](https://user-images.githubusercontent.com/20630248/147418948-806cc019-d2b9-48e1-b5bc-1209edd7a21b.png)
