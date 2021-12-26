@@ -3,7 +3,7 @@
 
  This implementation does not actually generate a tree as i found it not nececarry for the purposes of this demo and instead only the lowest elements of the tree are saved and the interrated upon. However making it generate a tree should be easily done with minor modifications 
 
-Physics tickrate, framerate and toggling of the partitioning algorithm(as oposed to bruteforce collision check) is available in order to observer the effects of KD partitioning on performace.
+Physics tickrate, framerate and toggling of the partitioning algorithm(as oposed to bruteforce collision check) is available in order to observe the effects of KD partitioning on performace.
 
 My machine can handle about:
 
