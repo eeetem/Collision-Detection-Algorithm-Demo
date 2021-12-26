@@ -10,6 +10,7 @@ public class Area {
     ArrayList<Entity> ContainedEntities;
 
     public static boolean DisableKDPartitioning = false;
+    public static boolean HideAreas = false;
 
     public Area(Vector2 position, Vector2 size, ArrayList<Entity> containedEntities) {
         Position = position;
@@ -18,6 +19,9 @@ public class Area {
     }
 
     public void Draw(Graphics g){
+
+        if(HideAreas) return;
+
 
         g.setColor(Color.white);
         g.drawRect((int) Position.x , (int) Position.y, (int)  Size.x, (int) Size.y);

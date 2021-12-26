@@ -6,13 +6,21 @@ import java.awt.image.BufferStrategy;
 public class Renderer extends Thread{
 
 
-    public float FPS;
 
     private final Canvas canvas;
+
+    public static void SetFPS(int FPS){
+        targetFps = FPS;
+        MSperFrame = 1000f/FPS;
+    }
+    public static int targetFps;
+    private static float MSperFrame;
 
     public Renderer(Canvas canvas){
 
         this.canvas = canvas;
+
+        SetFPS(60);
 
     }
 
@@ -39,8 +47,23 @@ public class Renderer extends Thread{
             bs.show();
             long end = System.currentTimeMillis();
 
-            long MSperFrame = end - start;
-            FPS = 1000f/MSperFrame;
+            float DrawTime = end - start;
+
+
+
+            if (DrawTime <= MSperFrame){
+
+                try {
+                    Thread.sleep((int) (MSperFrame - DrawTime));
+                    DrawTime = MSperFrame;
+
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+
+            }
+
+            GUI.FPSCounter.setText("FPS: "+Math.round(1000f/DrawTime));
 
 
         }

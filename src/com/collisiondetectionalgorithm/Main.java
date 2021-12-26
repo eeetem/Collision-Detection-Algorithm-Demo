@@ -28,10 +28,12 @@ public class Main {
         frame.setResizable(false);
 
 
-        for (int i = 0; i < 300; i++) {
+        for (int i = 0; i < 5; i++) {
             EntityManager.MakeRandomEntity();
 
        }
+
+
 
 
 
@@ -40,6 +42,8 @@ public class Main {
 
         Renderer renderer = new Renderer(canvas);
         Ticker ticker = new Ticker();
+
+        new GUI();
 
         ticker.start();
         renderer.start();

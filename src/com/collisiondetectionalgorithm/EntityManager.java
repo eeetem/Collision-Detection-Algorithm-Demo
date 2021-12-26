@@ -8,7 +8,11 @@ import java.util.Random;
 public class EntityManager {
 
 
+    static public ArrayList<Entity> CreationQueue = new ArrayList<Entity>();
 
+
+    static public ArrayList<Entity> LastEntities = new ArrayList<Entity>();///for drawing purposes to avoid simoultanous modification
+    static public ArrayList<Area> LastAreas = new ArrayList<Area>();///for drawing purposes to avoid simoultanous modification
 
     static public ArrayList<Entity> Entities = new ArrayList<Entity>();
     static public ArrayList<Area> Areas = new ArrayList<Area>();
@@ -23,7 +27,6 @@ public class EntityManager {
     public static Entity MakeRandomEntity(){
 
 
-
         Entity e = MakeEntity(new Vector2(rand.nextInt(Main.canvas.getWidth()-300),rand.nextInt(Main.canvas.getHeight()-200)),new Vector2(rand.nextInt(15)+5,rand.nextInt(15)+5));
         e.Velocity = new Vector2(rand.nextInt(80)-40,rand.nextInt(80)-40);
 
@@ -34,7 +37,7 @@ public class EntityManager {
     public static Entity MakeEntity(Vector2 Position, Vector2 Size)
     {
         Entity e = new Entity(Position,Size);
-         Entities.add(e);
+         CreationQueue.add(e);
          return e;
     }
 
@@ -54,7 +57,15 @@ public class EntityManager {
         ///draw uses Last lists in oder to not cause simoultaneous modification exceptions
 
         modifying = true;
+        LastEntities.clear();
+        LastEntities.addAll(Entities);
+        LastAreas.clear();
+        LastAreas.addAll(Areas);
+        modifying = false;
 
+        Entities.addAll(CreationQueue);
+
+        CreationQueue.clear();
 
         for (Entity entity : Entities)
         {
@@ -91,7 +102,6 @@ public class EntityManager {
             }
 
         }
-        modifying = false;
 
 
     }
@@ -110,7 +120,7 @@ public class EntityManager {
             }
 
         }
-        ArrayList<Entity> CachedEntities = new ArrayList<Entity>(Entities);
+        ArrayList<Entity> CachedEntities = new ArrayList<Entity>(LastEntities);
         ArrayList<Area> CachedAreas = new ArrayList<Area>(Areas);
 
 
