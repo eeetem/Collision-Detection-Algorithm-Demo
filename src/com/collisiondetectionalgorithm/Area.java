@@ -126,24 +126,24 @@ public class Area {
 
         float DistanceFromStartToMedian;
         float DistanceFromMedianToEdge;
-        if(AxisFlag) DistanceFromMedianToEdge = (Position.x + Size.x) - MedianCoordinate;
-        else DistanceFromMedianToEdge = (Position.y + Size.y) - MedianCoordinate;
 
-        if(AxisFlag) DistanceFromStartToMedian = MedianCoordinate - Position.x;
-        else DistanceFromStartToMedian = MedianCoordinate - Position.y;
+        if(AxisFlag) {
 
+            DistanceFromMedianToEdge = (Position.x + Size.x) - MedianCoordinate;
+            DistanceFromStartToMedian = MedianCoordinate - Position.x;
 
-
-
-
-        if(AxisFlag){
             area1 = new Area(Position,new Vector2(DistanceFromStartToMedian, Size.y),Entities1);
             area2 = new Area(new Vector2(Position.x+DistanceFromStartToMedian,Position.y),new Vector2(DistanceFromMedianToEdge, Size.y),Entities2);
+        }
+        else{
+            DistanceFromMedianToEdge = (Position.y + Size.y) - MedianCoordinate;
+            DistanceFromStartToMedian = MedianCoordinate - Position.y;
 
-        }else{
             area1 = new Area(Position,new Vector2(Size.x, DistanceFromStartToMedian),Entities1);
             area2 = new Area(new Vector2(Position.x,Position.y+DistanceFromStartToMedian),new Vector2(Size.x, DistanceFromMedianToEdge),Entities2);
         }
+
+
         returnAreas.addAll(area1.Subdivide(!AxisFlag));
         returnAreas.addAll(area2.Subdivide(!AxisFlag));
 
