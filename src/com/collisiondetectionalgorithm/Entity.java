@@ -63,3 +63,30 @@ class Ycomparator implements Comparator<Entity>{
         return ((int)(o1.Position.y+o1.Size.y) - (int)(o2.Position.y+o2.Size.y));
     }
 }
+
+interface EntityInterface {
+    float GetPosition(Entity entity);
+    float GetSize(Entity entity);
+}
+
+
+class YAxisGetter implements EntityInterface {
+    @Override
+    public float GetPosition(Entity entity) {
+        return entity.Position.y;
+    }
+    @Override
+    public float GetSize(Entity entity) {
+        return entity.Size.y;
+    }
+}
+class XAxisGetter implements EntityInterface {
+    @Override
+    public float GetPosition(Entity entity) {
+        return entity.Position.x;
+    }
+    @Override
+    public float GetSize(Entity entity) {
+        return entity.Size.x;
+    }
+}

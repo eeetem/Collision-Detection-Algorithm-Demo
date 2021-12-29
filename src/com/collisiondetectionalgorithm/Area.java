@@ -49,10 +49,16 @@ public class Area {
 
         }
 
+        EntityInterface entityInterface;
         //if axis flag is true do a split on X axis - otherwise Y
-
-        if(AxisFlag) ContainedEntities.sort(new Xcomparator());
-        else ContainedEntities.sort(new Ycomparator());
+        //a delegate/interface is used in order to not have an axisflag check every time we need to get the coordinates
+        if(AxisFlag){
+            entityInterface = new XAxisGetter();
+            ContainedEntities.sort(new Xcomparator());
+        }else {
+            entityInterface = new YAxisGetter();
+            ContainedEntities.sort(new Ycomparator());
+        }
 
 
         float MedianCoordinate;
@@ -63,12 +69,10 @@ public class Area {
 
         if(ContainedEntities.size() % 2 == 0){
 
-            if(AxisFlag) MedianCoordinate = (ContainedEntities.get(middle).Position.x +  ContainedEntities.get(middle-1).Position.x)/2;
-            else MedianCoordinate = (ContainedEntities.get(middle).Position.y +  ContainedEntities.get(middle-1).Position.y)/2;
+            MedianCoordinate = (entityInterface.GetPosition(ContainedEntities.get(middle)) +  entityInterface.GetPosition(ContainedEntities.get(middle-1)))/2;
 
         }else{
-            if(AxisFlag) MedianCoordinate = ContainedEntities.get(middle).Position.x;
-            else MedianCoordinate = ContainedEntities.get(middle).Position.y;
+            MedianCoordinate = entityInterface.GetPosition(ContainedEntities.get(middle));
         }
 
         ArrayList<Entity> Entities1 = new ArrayList<Entity>();
@@ -77,40 +81,30 @@ public class Area {
 
 
 
-
-
-
-
-
-//the double loop isnt very clean - but it's better performance wise to do this rather than do an axisflag check every iteration
-    if(AxisFlag){
         for (int i = 0; i < ContainedEntities.size(); i++) {
             Entity e = ContainedEntities.get(i);
-            float EntityCoordinate = e.Position.x;
-            float EntitySize = e.Size.x;
+            float EntityCoordinate = entityInterface.GetPosition(e);
+            float EntitySize = entityInterface.GetSize(e);
 
 
 
-            if(CheckEntityAreaSplit(MedianCoordinate, Entities1, Entities2, i, EntityCoordinate, EntitySize,AxisFlag)){
+            ///since the entities are sorted not by position but by "highest coordinate"(size+position) once we find 1 entity that's part of 2nd area -  we can add all further ones
+            if (EntityCoordinate + EntitySize < MedianCoordinate) continue;
 
-                break;
-            }
+
+            Entities2.addAll(ContainedEntities.subList(i,ContainedEntities.size()));
+            Entities1.addAll(ContainedEntities.subList(0,i));
+
+
+                for (Entity e2 : Entities2) {//this isnt the best efficency wide since there's a lot of checks being done - but atleast 1 half is filled with barelly any checks
+                    if(entityInterface.GetPosition(e2) <= MedianCoordinate && !Entities1.contains(e2)){
+                        Entities1.add(e2);
+                    }
+                }
+            break;
 
         }
-    }else{
-        for (int i = 0; i < ContainedEntities.size(); i++) {
-            Entity e = ContainedEntities.get(i);
-            float EntityCoordinate = e.Position.y;
 
-            float EntitySize = e.Size.y;
-
-
-            if(CheckEntityAreaSplit(MedianCoordinate, Entities1, Entities2, i, EntityCoordinate, EntitySize,AxisFlag)){
-
-                break;
-            }
-
-        }}
 
 
 
@@ -159,30 +153,16 @@ public class Area {
 
     }
 
-    private boolean CheckEntityAreaSplit(float medianCoordinate, ArrayList<Entity> entities1, ArrayList<Entity> entities2, int i, float entityCoordinate, float entitySize,boolean axisFlag) {
-        ///since the entities are sorted not by position but by "highest coordinate"(size+position) once we find 1 entity that's part of 2nd area -  we can add all further ones
-        if (entityCoordinate + entitySize < medianCoordinate) return false;
 
 
-            entities2.addAll(ContainedEntities.subList(i,ContainedEntities.size()));
-            entities1.addAll(ContainedEntities.subList(0,i));
 
 
-            //again the double loop isnt great but performance wise it's better not to have an axisflag check every itteration
-            if(axisFlag){
-            for (Entity e2 : entities2) {//this isnt the best efficency wide since there's a lot of checks being done - but atleast 1 half is filled with barelly any checks
-                if(e2.Position.x <= medianCoordinate && !entities1.contains(e2)){
-                    entities1.add(e2);
-                }
-            }}else{
 
-                for (Entity e2 : entities2) {//this isnt the best efficency wide since there's a lot of checks being done - but atleast 1 half is filled with barelly any checks
-                    if (e2.Position.y <= medianCoordinate && !entities1.contains(e2)) {
-                        entities1.add(e2);
-                    }
-                }
-            }
-            return  true;
-    }
+
+
+
+
+
+
 }
 
