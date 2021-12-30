@@ -67,11 +67,8 @@ public class EntityManager {
 
         CreationQueue.clear();
 
-        for (Entity entity : Entities)
-        {
-            entity.Update(deltaseconds);
 
-        }
+        Entities.parallelStream().forEach(e -> e.Update(deltaseconds));
 
 
         Area root = new Area(new Vector2(0,0), new Vector2(Main.canvas.getWidth(),Main.canvas.getHeight()), Entities);
@@ -92,7 +89,6 @@ public class EntityManager {
                 {
                     if (excludelist.contains(entity2)){
                         continue;
-
                     }
                     HandleCollision(entity,entity2);
 
