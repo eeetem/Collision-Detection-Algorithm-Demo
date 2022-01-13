@@ -1,5 +1,5 @@
 # Collision Detection Algorithm Demo
- A visual demostration of KD trees spacial partitioning used for collision detection.
+ A visual demostration of KD trees spatial partitioning used for collision detection.
 
  This implementation does not actually generate a tree as i found it not nececarry for the purposes of this demo and instead only the lowest elements of the tree are saved and the iterrated upon. However making it generate a tree should be easily done with minor modifications 
 
